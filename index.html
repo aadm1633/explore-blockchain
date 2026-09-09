@@ -462,16 +462,21 @@ body::-webkit-scrollbar {
     }
 
     function wavePath(baseY, amplitude, length, phase, power) {
+        // 波浪左右各向屏幕外延伸，避免动画移动到边缘时出现空隙
+        const bleed = Math.max(120, width * 0.12);
+        const startX = -bleed;
+        const endX = width + bleed;
+
         ctx.beginPath();
-        ctx.moveTo(0, height);
-        for (let x = 0; x <= width; x += 6) {
+        ctx.moveTo(startX, height);
+        for (let x = startX; x <= endX; x += 6) {
             const p = x / width;
             const y = baseY
                 + Math.sin(p * Math.PI * 2 * length + phase) * amplitude
                 + Math.sin(p * Math.PI * 4 * length + phase * 0.63) * amplitude * 0.18;
             ctx.lineTo(x, y);
         }
-        ctx.lineTo(width, height);
+        ctx.lineTo(endX, height);
         ctx.closePath();
         ctx.fill();
     }
